@@ -1,459 +1,95 @@
 <?php
-// admin/index.php
+require_once __DIR__ . '/includes/init.php';
 
-// You can include configuration, authentication checks, or database connections here
-// require_once 'config.php';
-// require_once 'auth.php';
+$stats = adminDashboardStats($pdo);
+$latestOrders = adminLatestOrders($pdo, 8);
 
-// Define page-specific variables
-$pageTitle = "AdminLTE v4 | Dashboard";
+$pageTitle = 'Aura Essence | Admin Dashboard';
+$activeNav = 'dashboard';
+$portalLabel = 'Aura & Essence — Management Portal';
+
+require __DIR__ . '/includes/header.php';
 ?>
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><?php echo $pageTitle; ?></title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
-    <meta name="title" content="<?php echo $pageTitle; ?>" />
-    <meta name="author" content="ColorlibHQ" />
-    <meta name="description" content="AdminLTE is a Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS. Fully accessible with WCAG 2.1 AA compliance." />
-    <meta name="keywords" content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard, accessible admin panel, WCAG compliant" />
-    <meta name="supported-color-schemes" content="light dark" />
-    <link rel="preload" href="./css/adminlte.css" as="style" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" media="print" onload="this.media = 'all'" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" crossorigin="anonymous" />
-    <link rel="stylesheet" href="./css/adminlte.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css" integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
+<div class="app-content-header py-3 bg-white border-bottom mb-4">
+    <div class="container-fluid">
+        <h3 class="mb-0 text-dark fw-semibold">Dashboard Overview</h3>
+    </div>
+</div>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css" integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
-  </head>
-  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-    <div class="app-wrapper">
-      
-      <nav class="app-header navbar navbar-expand bg-body">
-        <div class="container-fluid">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
-                <i class="bi bi-list"></i>
-              </a>
-            </li>
-            <li class="nav-item d-none d-md-block">
-              <a href="#" class="nav-link">Home</a>
-            </li>
-            <li class="nav-item d-none d-md-block">
-              <a href="#" class="nav-link">Contact</a>
-            </li>
-          </ul>
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-                <i class="bi bi-search"></i>
-              </a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link" data-bs-toggle="dropdown" href="#">
-                <i class="bi bi-chat-text"></i>
-                <span class="navbar-badge badge text-bg-danger">3</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                <a href="#" class="dropdown-item">
-                  <div class="d-flex">
-                    <div class="flex-shrink-0">
-                      <img src="./assets/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 rounded-circle me-3" />
+<div class="app-content">
+    <div class="container-fluid">
+
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="info-box shadow-sm p-3 bg-white rounded border-start border-primary border-4">
+                    <span class="info-box-icon text-primary fs-1 me-3"><i class="fas fa-flask"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-muted fw-medium">Total Fragrances</span>
+                        <h4 class="info-box-number mb-0 fw-bold"><?php echo (int) $stats['total_products']; ?></h4>
                     </div>
-                    <div class="flex-grow-1">
-                      <h3 class="dropdown-item-title">
-                        Brad Diesel
-                        <span class="float-end fs-7 text-danger"><i class="bi bi-star-fill"></i></span>
-                      </h3>
-                      <p class="fs-7">Call me whenever you can...</p>
-                      <p class="fs-7 text-secondary"><i class="bi bi-clock-fill me-1"></i> 4 Hours Ago</p>
-                    </div>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                  <div class="d-flex">
-                    <div class="flex-shrink-0">
-                      <img src="./assets/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 rounded-circle me-3" />
-                    </div>
-                    <div class="flex-grow-1">
-                      <h3 class="dropdown-item-title">
-                        John Pierce
-                        <span class="float-end fs-7 text-secondary"><i class="bi bi-star-fill"></i></span>
-                      </h3>
-                      <p class="fs-7">I got your message bro</p>
-                      <p class="fs-7 text-secondary"><i class="bi bi-clock-fill me-1"></i> 4 Hours Ago</p>
-                    </div>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                  <div class="d-flex">
-                    <div class="flex-shrink-0">
-                      <img src="./assets/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 rounded-circle me-3" />
-                    </div>
-                    <div class="flex-grow-1">
-                      <h3 class="dropdown-item-title">
-                        Nora Silvester
-                        <span class="float-end fs-7 text-warning"><i class="bi bi-star-fill"></i></span>
-                      </h3>
-                      <p class="fs-7">The subject goes here</p>
-                      <p class="fs-7 text-secondary"><i class="bi bi-clock-fill me-1"></i> 4 Hours Ago</p>
-                    </div>
-                  </div>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link" data-bs-toggle="dropdown" href="#">
-                <i class="bi bi-bell-fill"></i>
-                <span class="navbar-badge badge text-bg-warning">15</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                <span class="dropdown-item dropdown-header">15 Notifications</span>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                  <i class="bi bi-envelope me-2"></i> 4 new messages
-                  <span class="float-end text-secondary fs-7">3 mins</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                  <i class="bi bi-people-fill me-2"></i> 8 friend requests
-                  <span class="float-end text-secondary fs-7">12 hours</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                  <i class="bi bi-file-earmark-fill me-2"></i> 3 new reports
-                  <span class="float-end text-secondary fs-7">2 days</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item dropdown-footer"> See All Notifications </a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#" data-lte-toggle="fullscreen">
-                <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
-                <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
-              </a>
-            </li>
-            <li class="nav-item dropdown user-menu">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <img src="./assets/img/user2-160x160.jpg" class="user-image rounded-circle shadow" alt="User Image" />
-                <span class="d-none d-md-inline">Alexander Pierce</span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                <li class="user-header text-bg-primary">
-                  <img src="./assets/img/user2-160x160.jpg" class="rounded-circle shadow" alt="User Image" />
-                  <p>
-                    Alexander Pierce - Web Developer
-                    <small>Member since Nov. 2023</small>
-                  </p>
-                </li>
-                <li class="user-body">
-                  <div class="row">
-                    <div class="col-4 text-center"><a href="#">Followers</a></div>
-                    <div class="col-4 text-center"><a href="#">Sales</a></div>
-                    <div class="col-4 text-center"><a href="#">Friends</a></div>
-                  </div>
-                </li>
-                <li class="user-footer">
-                  <a href="#" class="btn btn-outline-secondary">Profile</a>
-                  <a href="#" class="btn btn-outline-danger float-end">Sign out</a>
-                </li>
-              </ul>
-            </li>
-            </ul>
-          </div>
-      </nav>
-      <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
-        <div class="sidebar-brand">
-          <a href="./index.php" class="brand-link">
-            <img src="./assets/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image opacity-75 shadow" />
-            <span class="brand-text fw-light">AdminLTE 4</span>
-          </a>
-        </div>
-        <div class="sidebar-wrapper">
-          <nav class="mt-2">
-            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation" aria-label="Main navigation" data-accordion="false" id="navigation">
-              <li class="nav-item menu-open">
-                <a href="#" class="nav-link active">
-                  <i class="nav-icon bi bi-speedometer"></i>
-                  <p>Dashboard <i class="nav-arrow bi bi-chevron-right"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="./index.php" class="nav-link active">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Dashboard v1</p>
-                    </a>
-                  </li>
-                  </ul>
-              </li>
-              <li class="nav-header">EXAMPLES</li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-box-arrow-in-right"></i>
-                  <p>Auth <i class="nav-arrow bi bi-chevron-right"></i></p>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </aside>
-      <main class="app-main">
-        <div class="app-content-header">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-sm-6">
-                <h3 class="mb-0">Dashboard</h3>
-              </div>
-              <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-end">
-                  <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-                </ol>
-              </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <div class="app-content">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-lg-3 col-6">
-                <div class="small-box text-bg-primary">
-                  <div class="inner">
-                    <h3>150</h3>
-                    <p>New Orders</p>
-                  </div>
-                  <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"></path>
-                  </svg>
-                  <a href="#" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="info-box shadow-sm p-3 bg-white rounded border-start border-warning border-4">
+                    <span class="info-box-icon text-warning fs-1 me-3"><i class="fas fa-clock"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-muted fw-medium">Pending Orders</span>
+                        <h4 class="info-box-number mb-0 fw-bold"><?php echo (int) $stats['pending_orders']; ?></h4>
+                    </div>
                 </div>
-              </div>
-              <div class="col-lg-3 col-6">
-                <div class="small-box text-bg-success">
-                  <div class="inner">
-                    <h3>53<sup class="fs-5">%</sup></h3>
-                    <p>Bounce Rate</p>
-                  </div>
-                  <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 01-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z"></path>
-                  </svg>
-                  <a href="#" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
-                </div>
-              </div>
-              <div class="col-lg-3 col-6">
-                <div class="small-box text-bg-warning">
-                  <div class="inner">
-                    <h3>44</h3>
-                    <p>User Registrations</p>
-                  </div>
-                  <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"></path>
-                  </svg>
-                  <a href="#" class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
-                </div>
-              </div>
-              <div class="col-lg-3 col-6">
-                <div class="small-box text-bg-danger">
-                  <div class="inner">
-                    <h3>65</h3>
-                    <p>Unique Visitors</p>
-                  </div>
-                  <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path clip-rule="evenodd" fill-rule="evenodd" d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"></path>
-                    <path clip-rule="evenodd" fill-rule="evenodd" d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"></path>
-                  </svg>
-                  <a href="#" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
-                </div>
-              </div>
             </div>
-            <div class="row">
-              <div class="col-lg-7 connectedSortable">
-                <div class="card mb-4">
-                  <div class="card-header">
-                    <h3 class="card-title">Sales Value</h3>
-                  </div>
-                  <div class="card-body">
-                    <div id="revenue-chart"></div>
-                  </div>
-                </div>
-
-                <div class="card direct-chat direct-chat-primary mb-4">
-                  <div class="card-header">
-                    <h3 class="card-title">Direct Chat</h3>
-                    <div class="card-tools">
-                      <span title="3 New Messages" class="badge text-bg-primary">3</span>
-                      <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
-                        <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
-                        <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
-                      </button>
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="info-box shadow-sm p-3 bg-white rounded border-start border-success border-4">
+                    <span class="info-box-icon text-success fs-1 me-3"><i class="fas fa-coins"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text text-muted fw-medium">Total Revenue</span>
+                        <h4 class="info-box-number mb-0 fw-bold"><?php echo formatPricePKR($stats['total_revenue']); ?></h4>
                     </div>
-                  </div>
-                  <div class="card-body">
-                    <div class="direct-chat-messages">
-                      <div class="direct-chat-msg">
-                        <div class="direct-chat-infos clearfix">
-                          <span class="direct-chat-name float-start">Alexander Pierce</span>
-                          <span class="direct-chat-timestamp float-end">23 Jan 2:00 pm</span>
-                        </div>
-                        <img class="direct-chat-img" src="./assets/img/user1-128x128.jpg" alt="message user image" />
-                        <div class="direct-chat-text">Is this template really for free? That's unbelievable!</div>
-                      </div>
-                      <div class="direct-chat-msg end">
-                        <div class="direct-chat-infos clearfix">
-                          <span class="direct-chat-name float-end">Sarah Bullock</span>
-                          <span class="direct-chat-timestamp float-start">23 Jan 2:05 pm</span>
-                        </div>
-                        <img class="direct-chat-img" src="./assets/img/user3-128x128.jpg" alt="message user image" />
-                        <div class="direct-chat-text">You better believe it!</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-footer">
-                    <form action="#" method="post">
-                      <div class="input-group">
-                        <input type="text" name="message" placeholder="Type Message ..." class="form-control" />
-                        <span class="input-group-append">
-                          <button type="button" class="btn btn-primary">Send</button>
-                        </span>
-                      </div>
-                    </form>
-                  </div>
                 </div>
-              </div>
-
-              <div class="col-lg-5 connectedSortable">
-                <div class="card text-white bg-primary bg-gradient border-primary mb-4">
-                  <div class="card-header border-0">
-                    <h3 class="card-title">Sales Value</h3>
-                  </div>
-                  <div class="card-body">
-                    <div id="world-map" style="height: 220px"></div>
-                  </div>
-                  <div class="card-footer border-0">
-                    <div class="row">
-                      <div class="col-4 text-center">
-                        <div id="sparkline-1" class="text-dark"></div>
-                        <div class="text-white">Visitors</div>
-                      </div>
-                      <div class="col-4 text-center">
-                        <div id="sparkline-2" class="text-dark"></div>
-                        <div class="text-white">Online</div>
-                      </div>
-                      <div class="col-4 text-center">
-                        <div id="sparkline-3" class="text-dark"></div>
-                        <div class="text-white">Sales</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
             </div>
         </div>
-        </main>
-      <footer class="app-footer">
-        <div class="float-end d-none d-sm-inline">Anything you want</div>
-        <strong>Copyright &copy; 2014-<?php echo date('Y'); ?>&nbsp;<a href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.</strong> All rights reserved.
-      </footer>
-      </div>
-    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
-    <script src="./js/adminlte.js"></script>
-    
-    <script>
-      const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
-      const Default = {
-        scrollbarTheme: 'os-theme-light',
-        scrollbarAutoHide: 'leave',
-        scrollbarClickScroll: true,
-      };
-      document.addEventListener('DOMContentLoaded', function () {
-        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
-        const isMobile = window.innerWidth <= 992;
-        if (sidebarWrapper && OverlayScrollbarsGlobal?.OverlayScrollbars !== undefined && !isMobile) {
-          OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-            scrollbars: {
-              theme: Default.scrollbarTheme,
-              autoHide: Default.scrollbarAutoHide,
-              clickScroll: Default.scrollbarClickScroll,
-            },
-          });
-        }
-      });
-    </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js" crossorigin="anonymous"></script>
-    <script>
-      new Sortable(document.querySelector('.connectedSortable'), {
-        group: 'shared',
-        handle: '.card-header',
-      });
-      const cardHeaders = document.querySelectorAll('.connectedSortable .card-header');
-      cardHeaders.forEach((cardHeader) => {
-        cardHeader.style.cursor = 'move';
-      });
-    </script>
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 fw-bold text-secondary">Latest Orders</h5>
+                <a href="manage_orders.php" class="btn btn-sm btn-outline-secondary">View all</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-3">Order ID</th>
+                                <th>Customer Name</th>
+                                <th>Item Ordered</th>
+                                <th>Total Price</th>
+                                <th class="pe-3">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($latestOrders)): ?>
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-5">No orders yet.</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($latestOrders as $order): ?>
+                                    <tr>
+                                        <td class="ps-3 fw-semibold"><?php echo htmlspecialchars(adminOrderCode((int) $order['id'])); ?></td>
+                                        <td><?php echo htmlspecialchars($order['full_name']); ?></td>
+                                        <td><?php echo htmlspecialchars(adminOrderItemsSummary($pdo, (int) $order['id'])); ?></td>
+                                        <td><?php echo formatPricePKR($order['total']); ?></td>
+                                        <td class="pe-3"><?php echo adminStatusBadge($order['status'] ?? 'pending'); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js" crossorigin="anonymous"></script>
-    <script>
-      const sales_chart_options = {
-        series: [
-          { name: 'Digital Goods', data: [28, 48, 40, 19, 86, 27, 90] },
-          { name: 'Electronics', data: [65, 59, 80, 81, 56, 55, 40] },
-        ],
-        chart: { height: 300, type: 'area', toolbar: { show: false } },
-        legend: { show: false },
-        colors: ['#0d6efd', '#20c997'],
-        dataLabels: { enabled: false },
-        stroke: { curve: 'smooth' },
-        xaxis: {
-          type: 'datetime',
-          categories: ['2023-01-01', '2023-02-01', '2023-03-01', '2023-04-01', '2023-05-01', '2023-06-01', '2023-07-01'],
-        },
-        tooltip: { x: { format: 'MMMM yyyy' } },
-      };
-      const sales_chart = new ApexCharts(document.querySelector('#revenue-chart'), sales_chart_options);
-      sales_chart.render();
-    </script>
+    </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js" crossorigin="anonymous"></script>
-    <script>
-      new jsVectorMap({ selector: '#world-map', map: 'world' });
-
-      const sparklineConfig = (data) => ({
-        series: [{ data }],
-        chart: { type: 'area', height: 50, sparkline: { enabled: true } },
-        stroke: { curve: 'straight' },
-        fill: { opacity: 0.3 },
-        yaxis: { min: 0 },
-        colors: ['#DCE6EC'],
-      });
-
-      new ApexCharts(document.querySelector('#sparkline-1'), sparklineConfig([1000, 1200, 920, 927, 931, 1027, 819, 930, 1021])).render();
-      new ApexCharts(document.querySelector('#sparkline-2'), sparklineConfig([515, 519, 520, 522, 652, 810, 370, 627, 319, 630, 921])).render();
-      new ApexCharts(document.querySelector('#sparkline-3'), sparklineConfig([15, 19, 20, 22, 33, 27, 31, 27, 19, 30, 21])).render();
-    </script>
-    </body>
-  </html>
+<?php require __DIR__ . '/includes/footer.php'; ?>

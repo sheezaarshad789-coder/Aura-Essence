@@ -1,111 +1,107 @@
-<?php include('../config.php'); ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura Essence | Manage Perfumes</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="dist/css/adminlte.min.css">
-</head>
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-    
-    <div class="app-wrapper">
-        
-        <nav class="app-header navbar navbar-expand bg-body shadow-sm">
-            <div class="container-fluid">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" data-lte-toggle="sidebar" href="#"><i class="fas fa-bars"></i></a></li>
-                </ul>
-                <span class="navbar-text fw-bold text-uppercase ms-2">Aura & Essence — Products Portal</span>
-            </div>
-        </nav>
+<?php
+require_once __DIR__ . '/includes/init.php';
 
-        <aside class="app-sidebar bg-dark shadow" data-bs-theme="dark">
-            <div class="sidebar-brand border-bottom border-secondary py-3">
-                <a href="index.php" class="brand-link text-center text-decoration-none">
-                    <span class="brand-text fw-light text-light" style="letter-spacing: 2px;"><strong>AURA</strong> ESSENCE</span>
-                </a>
-            </div>
-            <div class="sidebar-wrapper">
-                <nav class="mt-3">
-                    <ul class="nav sidebar-menu flex-column" role="menu">
-                        <li class="nav-item"><a href="index.php" class="nav-link"><i class="nav-icon fas fa-chart-line"></i><p>Dashboard</p></a></li>
-                        <li class="nav-item"><a href="manage_products.php" class="nav-link active"><i class="nav-icon fas fa-spray-can"></i><p>Manage Perfumes</p></a></li>
-                        <li class="nav-item"><a href="manage_orders.php" class="nav-link"><i class="nav-icon fas fa-shopping-bag"></i><p>Orders Panel</p></a></li>
-                        <li class="nav-header border-top border-secondary my-2"></li>
-                        <li class="nav-item"><a href="../index.php" class="nav-link" target="_blank"><i class="nav-icon fas fa-globe"></i><p>View Live Store</p></a></li>
-                    </ul>
-                </nav>
-            </div>
-        </aside>
+$products = $pdo->query('SELECT * FROM products ORDER BY id ASC')->fetchAll(PDO::FETCH_ASSOC);
 
-        <main class="app-main">
-            <div class="app-content-header py-3 bg-white border-bottom mb-4">
-                <div class="container-fluid">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="mb-0 text-dark fw-semibold">Fragrance Inventory</h3>
-                        <button class="btn btn-primary btn-sm"><i class="fas fa-plus me-2"></i>Add New Perfume</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="app-content">
-                <div class="container-fluid">
-                    
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th class="ps-3">ID</th>
-                                            <th>Image</th>
-                                            <th>Perfume Name</th>
-                                            <th>Category</th>
-                                            <th>Price</th>
-                                            <th>Stock</th>
-                                            <th class="pe-3 text-center">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="ps-3 fw-semibold">#1</td>
-                                            <td><img src="../images/velvet_oud.jpg" alt="Perfume" class="rounded" style="width: 40px; height: 40px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/40'"></td>
-                                            <td class="fw-semibold">Velvet Oud (100ml)</td>
-                                            <td><span class="badge bg-secondary-subtle text-secondary px-2 py-1">Oud / Woody</span></td>
-                                            <td>Rs. 4,500</td>
-                                            <td><span class="text-success fw-bold">24 Left</span></td>
-                                            <td class="pe-3 text-center">
-                                                <button class="btn btn-sm btn-outline-info me-1"><i class="fas fa-edit"></i></button>
-                                                <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="ps-3 fw-semibold">#2</td>
-                                            <td><img src="../images/mystic_rose.jpg" alt="Perfume" class="rounded" style="width: 40px; height: 40px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/40'"></td>
-                                            <td class="fw-semibold">Mystic Rose (50ml)</td>
-                                            <td><span class="badge bg-secondary-subtle text-secondary px-2 py-1">Floral</span></td>
-                                            <td>Rs. 3,800</td>
-                                            <td><span class="text-danger fw-bold">3 Low Stock</span></td>
-                                            <td class="pe-3 text-center">
-                                                <button class="btn btn-sm btn-outline-info me-1"><i class="fas fa-edit"></i></button>
-                                                <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+$flash = '';
+if (isset($_GET['saved'])) {
+    $flash = 'Product saved successfully.';
+} elseif (isset($_GET['deleted'])) {
+    $flash = 'Product deleted successfully.';
+} elseif (isset($_GET['error'])) {
+    $flash = $_GET['error'];
+}
 
-                </div>
-            </div>
-        </main>
+$pageTitle = 'Aura Essence | Manage Perfumes';
+$activeNav = 'products';
+$portalLabel = 'Aura & Essence — Products Portal';
 
+require __DIR__ . '/includes/header.php';
+?>
+
+<div class="app-content-header py-3 bg-white border-bottom mb-4">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <h3 class="mb-0">Fragrance Inventory</h3>
+            <a href="product_form.php" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i> Add New Perfume
+            </a>
+        </div>
     </div>
+</div>
 
-    <script src="dist/js/adminlte.min.js"></script>
-</body>
-</html>
+<div class="app-content">
+    <div class="container-fluid">
+
+        <?php if ($flash): ?>
+            <div class="alert alert-<?php echo isset($_GET['error']) ? 'danger' : 'success'; ?> border-0 shadow-sm">
+                <?php echo htmlspecialchars($flash); ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom py-3">
+                <span class="text-muted small"><?php echo count($products); ?> products in catalog</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-3">ID</th>
+                                <th>Image</th>
+                                <th>Perfume Name</th>
+                                <th>Vibe</th>
+                                <th>Price</th>
+                                <th class="pe-3 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($products)): ?>
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-5">
+                                        No fragrances yet.
+                                        <a href="product_form.php">Add your first perfume</a>
+                                    </td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($products as $p): ?>
+                                    <tr>
+                                        <td class="ps-3 fw-semibold">#<?php echo (int) $p['id']; ?></td>
+                                        <td>
+                                            <img
+                                                src="<?php echo htmlspecialchars(adminProductImageUrl($p['image'])); ?>"
+                                                alt="<?php echo htmlspecialchars($p['name']); ?>"
+                                                class="rounded"
+                                                style="width: 48px; height: 48px; object-fit: cover;"
+                                            >
+                                        </td>
+                                        <td class="fw-semibold"><?php echo htmlspecialchars($p['name']); ?></td>
+                                        <td>
+                                            <span class="badge text-bg-secondary"><?php echo htmlspecialchars($p['vibe']); ?></span>
+                                        </td>
+                                        <td><?php echo formatPricePKR($p['price']); ?></td>
+                                        <td class="pe-3 text-center">
+                                            <a href="product_form.php?id=<?php echo (int) $p['id']; ?>" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form method="POST" action="product_action.php" class="d-inline" onsubmit="return confirm('Delete this perfume?');">
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="<?php echo (int) $p['id']; ?>">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php require __DIR__ . '/includes/footer.php'; ?>
